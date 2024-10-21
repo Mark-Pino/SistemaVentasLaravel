@@ -1,3 +1,32 @@
+##
+ingresar al contenedor jenkins activar e instalar
+docker exec -it my-jenkins-container bash
+
+PHP
+apt-get update
+apt-get install -y php
+COMPOSER
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+SONARQUBE
+apt-get update
+apt-get install -y wget
+wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+apt-get install -y unzip
+unzip sonar-scanner-cli-4.8.0.2856-linux.zip -d /opt/
+echo 'export PATH=$PATH:/opt/sonar-scanner-4.8.0.2856-linux/bin' >> ~/.bashrc
+source ~/.bashrc
+
+php -v
+composer -V
+sonar-scanner -v
+
+habilitar 
+sudo apt-get install php8.2-xml php8.2-zip php8.2-bcmath php8.2-curl
+
+GD
+apt-get update
+apt-get install -y php8.2-gd
 ## SISTEMA DE PUNTO DE VENTA CON LARAVEL
 
 Gestión de Punto de Venta y Facturación construido con Laravel 10 y MySql.
