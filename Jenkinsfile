@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Obtén el código desde tu repositorio GitHub
-                git credentialsId: 'githubtoken', url: 'https://github.com/Mark-Pino/SistemaVentasLaravel.git', branch: 'main'
+                git credentialsId: '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', url: 'https://github.com/Mark-Pino/SistemaVentasLaravel.git', branch: 'main'
             }
         }
 
