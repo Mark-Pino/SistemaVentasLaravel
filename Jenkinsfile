@@ -1,62 +1,41 @@
 pipeline {
     agent any
 
-    environment {
-        COMPOSE_FILE = 'docker-compose.yml'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                // Obtén el código desde tu repositorio GitHub
-                git credentialsId: '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', url: 'https://github.com/Mark-Pino/SistemaVentasLaravel.git', branch: 'main'
+                // Clona tu repositorio
+                git 'https://github.com/Mark-Pino/SistemaVentasLaravel.git'
             }
         }
-
         stage('Install Dependencies') {
             steps {
-                // Usa Docker para correr composer install
-                script {
-                    docker.image('composer:2').inside {
-                        sh 'composer install --no-interaction --prefer-dist'
-                    }
-                }
+                // Instala las dependencias de Composer
+                sh 'composer install'
             }
         }
-
-        stage('Run Migrations') {
+        stage('SonarQube Analysis') {
             steps {
-                // Ejecuta las migraciones de Laravel en el contenedor PHP
+                // Configura SonarQube
                 script {
-                    docker.image('php:8.2-fpm').inside {
-                        withEnv(['DB_CONNECTION=mysql', 'DB_HOST=your-db-host', 'DB_DATABASE=your-db', 'DB_USERNAME=your-username', 'DB_PASSWORD=your-password']) {
-                            sh 'php artisan migrate --force'
-                        }
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('SonarQube') { // Nombre de la configuración de SonarQube en Jenkins
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sistema_ventas_laravel -Dsonar.sources=. -Dsonar.host.url=http://docker.sonar:9000 -Dsonar.login=squ_3805da18fcef575583bc85ce5c5183b9305c14d9"
                     }
                 }
             }
         }
-
-        stage('Testing') {
+        stage('Build') {
             steps {
-                // Aquí puedes añadir cualquier test que quieras correr
-                script {
-                    docker.image('php:8.2-fpm').inside {
-                        sh 'php artisan test'
-                    }
-                }
+                // Ejecuta el build si es necesario
+                // sh 'npm run build' o cualquier otro comando relevante
             }
         }
-    }
-
-    post {
-        always {
-            // Limpia después de cada ejecución
-            cleanWs()
-        }
-        failure {
-            // Notificación en caso de falla
-            echo 'El pipeline ha fallado.'
+        stage('Deploy') {
+            steps {
+                // Despliega tu aplicación si es necesario
+                // sh 'php artisan migrate' u otros comandos
+            }
         }
     }
 }
