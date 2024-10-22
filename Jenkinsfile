@@ -11,8 +11,13 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                // Instala las dependencias de Composer
-                sh 'composer install'
+                script {
+                    try {
+                        sh 'composer install'
+                    } catch (Exception e) {
+                        error "Failed to install dependencies: ${e.message}"
+                    }
+                }
             }
         }
         stage('SonarQube Analysis') {
