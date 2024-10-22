@@ -2,10 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Clone') {
             steps {
-                // Clona tu repositorio
-                git 'https://github.com/Mark-Pino/SistemaVentasLaravel.git'
+                timeout(time: 2, unit: 'MINUTES'){
+                    git branch: 'main', credentialsId: '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', url: 'https://github.com/Mark-Pino/SistemaVentasLaravel.git'
+                }
             }
         }
         stage('Install Dependencies') {
